@@ -1,81 +1,60 @@
 import {
-  JupyterLab,
-  JupyterLabPlugin,
+    JupyterFrontEnd, JupyterFrontEndPlugin
 } from '@jupyterlab/application';
-
-import {
-  IFileBrowserFactory
-} from '@jupyterlab/filebrowser';
 
 import { INotebookTracker } from '@jupyterlab/notebook';
 
+const insertAt = (a: string, b: string, position: number) => a.substr(0, position) + b + a.substr(position);
 
-import {
-  retrieveImageFromClipboardAsBlob,
-} from './clipboard'
+const extension: JupyterFrontEndPlugin<void> = {
+    id: 'jupyterlab-clipboard-image',
+    autoStart: true,
+    requires: [
+        INotebookTracker,
+    ],
+    activate: (app: JupyterFrontEnd, notebooks: INotebookTracker, ) => {
+        console.log('JupyterLab extension jupyterlab-clipboard-image is activated!');
 
-import {
-  imageEditor,
-} from './image-editor'
+        window.addEventListener("paste", async function (e: ClipboardEvent) {
+            const items: any[] = [];
+            const clipboardData = e.clipboardData || (window as any).clipboardData;
+            if (!clipboardData) return items;
 
-import {
-  openPasteAsDialog,
-  openConfirmOverwriteDialog,
-} from './dialogs';
+            let rawItems = clipboardData.items;
+            if (!rawItems || !rawItems.length) return items;
 
+            for (let i = 0, len = rawItems.length; i < len; i++) {
+                const item = rawItems[i];
+                if (!item.type.includes("image")) continue;
+                items.push(item.getAsFile())
+            }
+            const clipboardImage = items.find(Boolean);
 
+            if (!clipboardImage) return;
 
-const plugin: JupyterLabPlugin<void> = {
-  id: 'jupyterlab-clipboard',
-  requires: [
-    IFileBrowserFactory,
-    INotebookTracker,
-  ],
-  autoStart: true,
-  activate: activateJupyterlabClipboard,
+            var reader = new FileReader();
+            reader.onloadend = function () {
+                var base64data = reader.result;
+                var content = `![](${base64data})`;
+                if (notebooks.activeCell) {
+                    const { line, column } = notebooks.activeCell.editor.getCursorPosition();
+                    const cellContent = notebooks.activeCell.editor.model.value;
+                    const newContent = cellContent.text.split("\n");
+
+                    newContent[line] = insertAt(newContent[line], content, column);
+                    cellContent.text = newContent.join("\n");
+
+                    notebooks.activeCell.editor.setCursorPosition({
+                        line: line + content.length,
+                        column: column
+                    });
+                }
+            }
+            reader.readAsDataURL(clipboardImage);
+
+        }, false);
+    }
 };
 
-export default plugin;
-
-import {
-  PathExt,
-} from '@jupyterlab/coreutils';
-
-function activateJupyterlabClipboard(
-  app: JupyterLab,
-  browserFactory: IFileBrowserFactory,
-  notebooks: INotebookTracker,
-) {
-  const browser = browserFactory.defaultBrowser;
-
-  const {
-    saveImageAs,
-    insertInCell,
-    createMarkdownImageTag,
-    fileAlreadyExists,
-  } = imageEditor(app, notebooks);
-
-  window.addEventListener("paste", async function(e: ClipboardEvent) {
-    const clipboardImage = retrieveImageFromClipboardAsBlob(e).find(Boolean);
-    if(!clipboardImage) return;
-
-    const cwd = browser.model.path;
-
-    const defaultPath = PathExt.resolve(cwd, clipboardImage.name);
-    const path = await openPasteAsDialog(defaultPath)
-    const alreadyExists = await fileAlreadyExists(path)
-
-    if(alreadyExists) {
-      const overwrite = await openConfirmOverwriteDialog(path)
-      if(!overwrite) return;
-    }
-
-    if(!path) return;
-
-    await saveImageAs(cwd, path, clipboardImage);
-    const relativePath = PathExt.relative(cwd, path);
-    const content = createMarkdownImageTag(relativePath)
-    insertInCell(content);
-  }, false);
-}
+export default extension;
 

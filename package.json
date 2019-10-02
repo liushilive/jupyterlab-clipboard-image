@@ -1,20 +1,20 @@
 {
-  "name": "jupyterlab-clipboard",
-  "version": "0.3.0-alpha",
-  "description": "Paste images from clipboard",
+  "name": "jupyterlab-clipboard-image",
+  "version": "0.0.2",
+  "description": "粘贴图片",
   "keywords": [
     "jupyter",
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/Bamieh/jupyterlab-clipboard",
+  "homepage": "https://github.com/liushilive/jupyterlab-clipboard-image",
   "bugs": {
-    "url": "https://github.com/Bamieh/jupyterlab-clipboard/issues"
+    "url": "https://github.com/liushilive/jupyterlab-clipboard-image/issues"
   },
   "license": "BSD-3-Clause",
-  "author": "Bamieh",
+  "author": "liushilive",
   "contributors": [
-    "Antonio Oliveira <templarbr@gmail.com>"
+    "刘士 <liushilive@outlook.com>"
   ],
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
@@ -24,25 +24,20 @@
   "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bamieh/jupyterlab-clipboard.git"
+    "url": "https://github.com/liushilive/jupyterlab-clipboard-image.git"
   },
   "scripts": {
     "build": "tsc",
-    "prepublish": "yarn clean && yarn build",
-    "clean": "rimraf lib",
-    "watch": "tsc -w"
+    "prepublishOnly": "yarn clean && yarn build",
+    "clean": "rimraf lib"
   },
   "dependencies": {
-    "@jupyterlab/application": "^0.19.1",
-    "@jupyterlab/coreutils": "^2.2.1",
-    "@jupyterlab/filebrowser": "^0.19.3",
-    "@jupyterlab/notebook": "^0.19.2",
-    "@jupyterlab/services": "^3.2.1",
-    "@phosphor/widgets": "^1.6.0"
+    "@jupyterlab/application": "^1.1.3",
+    "@jupyterlab/notebook": "^1.1.3"
   },
   "devDependencies": {
-    "rimraf": "^2.6.2",
-    "typescript": "~3.1.3"
+    "rimraf": "^3.0.0",
+    "typescript": "~3.6.3"
   },
   "jupyterlab": {
     "extension": true
