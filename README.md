@@ -1,61 +1,34 @@
-# jupyterlab-clipboard-image
+# jupyterlab Clipboard Image
 
-![Github Actions Status](https://github.com/liushilive/jupyterlab-clipboard-image.git/workflows/Build/badge.svg)
+把剪贴板上的图片粘贴到 notebook
 
-粘贴图片
+## Prerequisites
 
-## Requirements
+* JupyterLab
 
-* JupyterLab >= 3.0
-
-## Install
+## Installation
 
 ```bash
-pip install jupyterlab-clipboard-image
+jupyter labextension install jupyterlab-clipboard-image
 ```
 
-## Contributing
+## Development
 
-### Development install
-
-Note: You will need NodeJS to build the extension package.
-
-The `jlpm` command is JupyterLab's pinned version of
-[yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
-`yarn` or `npm` in lieu of `jlpm` below.
+对于开发安装，请在 repository 目录中执行以下操作：
 
 ```bash
-# Clone the repo to your local environment
-# Change directory to the jupyterlab-clipboard-image directory
-# Install package in development mode
-pip install -e .
-# Link your development version of the extension with JupyterLab
-jupyter labextension develop . --overwrite
-# If using a server extension, it must be manually installed in develop mode
-jupyter server extension enable <extension_name>
-# Rebuild extension Typescript source after making changes
-jlpm run build
+npm install
+npm run build
+jupyter labextension link .
 ```
 
-You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
+要重新构建包和 JupyterLab 应用程序：
 
 ```bash
-# Watch the source directory in one terminal, automatically rebuilding when needed
-jlpm run watch
-# Run JupyterLab in another terminal
-jupyter lab
+npm run build
+jupyter lab build
 ```
 
-With the watch command running, every saved change will immediately be built locally and available in your running JupyterLab. Refresh JupyterLab to load the change in your browser (you may need to wait several seconds for the extension to be rebuilt).
+### Todo
 
-By default, the `jlpm run build` command generates the source maps for this extension to make it easier to debug using the browser dev tools. To also generate source maps for the JupyterLab core extensions, you can run the following command:
-
-```bash
-jupyter lab build --minimize=False
-```
-
-### Uninstall
-
-```bash
-pip uninstall jupyterlab-clipboard-image
-```
+只是为了方便我自己，如果你有好的想法，自己提交代码。
