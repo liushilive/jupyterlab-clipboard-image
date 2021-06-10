@@ -14,7 +14,7 @@ const extension: JupyterFrontEndPlugin<void> = {
     ],
     activate: (app: JupyterFrontEnd, notebooks: INotebookTracker, ) => {
         console.log('JupyterLab extension jupyterlab-clipboard-image is activated!');
-
+        
         window.addEventListener("paste", async function (e: ClipboardEvent) {
             const items: any[] = [];
             const clipboardData = e.clipboardData || (window as any).clipboardData;
